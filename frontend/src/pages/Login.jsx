@@ -15,7 +15,7 @@ const Login = () => {
       login(response.data);
       navigate("/events");
     } catch (error) {
-      alert("Login failed. Please try again.");
+      alert("Login Failed. Please try again.");
     }
   };
 
