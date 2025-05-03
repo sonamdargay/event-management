@@ -23,16 +23,17 @@ export default function Login1() {
   return (
     <div className="min-h-screen bg-white">
       {/* 1. top dark bar */}
-      <div className="w-full h-14 bg-gray-800" />
+      <div
+        className="w-full h-14"
+        style={{ backgroundColor: "#333" }}
+      />
 
       {/* 2. Event Management header with line */}
       <div className="w-full pl-12 pr-6 py-6">
-        <div className="flex items-center">
-          <h1 className="text-3xl font-bold leading-tight">
-            Event<br />Management
-          </h1>
-          <div className="flex-grow border-t border-gray-300 ml-6" />
-        </div>
+        <h1 className="text-3xl font-bold leading-tight">
+          Event<br />Management
+        </h1>
+        <div className="border-t border-gray-300 mt-2" />
       </div>
 
       {/* 3. Your LOG IN form */}
@@ -113,7 +114,19 @@ export default function Login1() {
             />
             Sign up with Apple
           </button>
+          <button
+            type="button"
+            className="w-full flex items-center justify-center p-3 bg-gray-100 rounded-md hover:bg-gray-200"
+          >
+            <img
+              src="https://img.icons8.com/color/16/facebook-new.png"
+              alt="Facebook"
+              className="mr-2"
+            />
+            Sign up with Facebook
+          </button>
         </div>
+        <div className="h-20" />
       </div>
     </div>
   );

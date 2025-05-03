@@ -1,6 +1,6 @@
 // src/pages/Register1.jsx
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import axiosInstance from "../axiosConfig";
 
 export default function Register1() {
@@ -85,7 +85,12 @@ export default function Register1() {
         <p className="text-center text-gray-600 text-sm mt-6">Or,</p>
 
         <div className="mt-6 space-y-3">
-          <button className="w-full flex items-center justify-center p-3 bg-gray-100 rounded-md hover:bg-gray-200">
+          {/* ← Google button now navigates to /userpage */}
+          <button
+            type="button"
+            onClick={() => navigate("/userpage")}
+            className="w-full flex items-center justify-center p-3 bg-gray-100 rounded-md hover:bg-gray-200"
+          >
             <img
               src="https://img.icons8.com/color/16/google-logo.png"
               alt="Google"
@@ -93,7 +98,10 @@ export default function Register1() {
             />
             Sign up with Google
           </button>
-          <button className="w-full flex items-center justify-center p-3 bg-gray-100 rounded-md hover:bg-gray-200">
+          <button
+            type="button"
+            className="w-full flex items-center justify-center p-3 bg-gray-100 rounded-md hover:bg-gray-200"
+          >
             <img
               src="https://img.icons8.com/ios-filled/16/mac-os.png"
               alt="Apple"
@@ -101,7 +109,33 @@ export default function Register1() {
             />
             Sign up with Apple
           </button>
+          <button
+            type="button"
+            className="w-full flex items-center justify-center p-3 bg-gray-100 rounded-md hover:bg-gray-200"
+          >
+            <img
+              src="https://img.icons8.com/color/16/facebook-new.png"
+              alt="Facebook"
+              className="mr-2"
+            />
+            Sign up with Facebook
+          </button>
         </div>
+
+        <p className="text-center text-gray-600 text-sm mt-6">
+          By clicking “Sign up”, you agree to EventBookings Terms &amp; Conditions and
+          have read the Privacy Policy
+        </p>
+
+        <p className="text-center text-gray-600 text-sm mt-4">
+          Already have an account?{" "}
+          <Link to="/login1" className="text-green-600 hover:underline">
+            Log In
+          </Link>
+        </p>
+
+        {/* spacer to push footer down */}
+        <div className="h-20" />
       </div>
     </div>
   );
