@@ -1,41 +1,42 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import Topbar from "../components/Topbar";
 import GreetingCard from "../components/GreetingCard";
 import FilterBar from "../components/FilterBar";
 import Footer from "../components/Footer";
 import EventModal from "../components/EventModal";
+import axiosInstance from "../../axiosConfig";
+import { useAuth } from "../../context/AuthContext";
 
+const BASE_URL = axiosInstance.defaults.baseURL;
 const EventDetails = () => {
   const [sidebarVisible, setSidebarVisible] = useState(true);
-
   const [showModal, setShowModal] = useState(false);
+  const [event, setEvent] = useState(null); // Starts empty
+  const { eventId } = useParams(); // Get the event ID from URL
+  const { user } = useAuth();
 
-  // Example event data
-  const [event, setEvent] = useState({
-    name: "This is a test event",
-    description:
-      "This is an event that I don't want to share details because I am too bored to type and I don't like using Lorem Ipsum as a place holder.",
-    from: "21/09/2023 12:00PM",
-    to: "21/09/2023 03:00PM",
-    image: "/path-to-event-image.jpg",
-    attendees: 12,
-  });
+  // 🔥 Fetch event details when component mounts or eventId changes
+  useEffect(() => {
+    const fetchEvent = async () => {
+      try {
+        const response = await axiosInstance.get(`/api/events/${eventId}`, {
+          headers: { Authorization: `Bearer ${user?.token}` },
+        });
+        setEvent(response.data);
+      } catch (error) {
+        console.error("Failed to fetch event:", error);
+      }
+    };
 
-  const handleModalSubmit = (updatedEvent) => {
-    console.log("Updated Event:", updatedEvent);
-
-    // Update the event data
-    setEvent((prev) => ({
-      ...prev,
-      ...updatedEvent,
-      // If no new image was provided, keep the old one
-      image: updatedEvent.image
-        ? URL.createObjectURL(updatedEvent.image)
-        : prev.image,
-    }));
-  };
-
+    if (eventId && user?.token) {
+      fetchEvent();
+    }
+  }, [eventId, user]);
+  if (!event) {
+    return <p>Loading event details...</p>;
+  }
   return (
     <div className="d-flex">
       {sidebarVisible && <Sidebar />}
@@ -44,49 +45,74 @@ const EventDetails = () => {
         <div className="p-4 bg-light" style={{ minHeight: "100vh" }}>
           <GreetingCard
             title="Event Details"
-            subtitle="We are on a mission to help developers like you to build beautiful projects for FREE."
+            subtitle="View and update your event information."
           />
           <FilterBar />
 
           <div className="bg-white rounded p-4 shadow-sm">
-            <h5>Your Events</h5>
+            <h5>Your Event</h5>
             <p>
               <i className="bi bi-check2-circle text-primary"></i>{" "}
-              {event.attendees} Confirmed attendees
+              {event.attendees ? event.attendees.length : 0} Confirmed attendees
             </p>
 
             <div className="row">
               <div className="col-md-8">
                 <div className="mb-3">
                   <label className="form-label fw-bold">Event Name:</label>
-                  <p>{event.name}</p>
+                  <p>{event.eventName}</p>
                 </div>
 
                 <div className="mb-3">
-                  <label className="form-label fw-bold">
-                    Description of Event:
-                  </label>
+                  <label className="form-label fw-bold">Description:</label>
                   <p>{event.description}</p>
                 </div>
 
                 <div className="mb-3 d-flex gap-3">
                   <div>
                     <label className="form-label fw-bold">From:</label>
-                    <p>{event.from}</p>
+                    <p>
+                      {event.fromDate
+                        ? new Date(event.fromDate).toLocaleDateString()
+                        : "-"}
+                    </p>
                   </div>
                   <div>
                     <label className="form-label fw-bold">To:</label>
-                    <p>{event.to}</p>
+                    <p>
+                      {event.toDate
+                        ? new Date(event.toDate).toLocaleDateString()
+                        : "-"}
+                    </p>
                   </div>
+                </div>
+
+                <div className="mb-3">
+                  <label className="form-label fw-bold">Status:</label>
+                  <p>{event.eventStatus || "Draft"}</p>
+                </div>
+
+                <div className="mb-3">
+                  <label className="form-label fw-bold">Location:</label>
+                  <p>{event.location}</p>
                 </div>
               </div>
 
               <div className="col-md-4 text-center">
-                <img
-                  src={event.image}
-                  alt="Event"
-                  className="img-fluid rounded mb-3"
-                />
+                {event.featuredImage ? (
+                  <img
+                    src={
+                      event.featuredImage
+                        ? `${BASE_URL}/uploads/${event.featuredImage}`
+                        : "/placeholder.jpg"
+                    }
+                    alt="Event"
+                    className="img-fluid rounded mb-3"
+                    style={{ maxWidth: "300px", width: "100%", height: "auto" }}
+                  />
+                ) : (
+                  <p>No image uploaded.</p>
+                )}
                 <button
                   className="btn btn-primary rounded-pill"
                   onClick={() => setShowModal(true)}
@@ -100,12 +126,14 @@ const EventDetails = () => {
         <Footer />
       </div>
 
-      {/* Reusable Modal */}
+      {/* Event Modal for editing */}
       <EventModal
         show={showModal}
         onClose={() => setShowModal(false)}
-        onSubmit={handleModalSubmit}
-        eventData={event}
+        events={[]} // No need for events list here
+        setEvents={() => {}} // Dummy since we're only editing single event
+        editingEvent={event}
+        setEditingEvent={setEvent}
       />
     </div>
   );

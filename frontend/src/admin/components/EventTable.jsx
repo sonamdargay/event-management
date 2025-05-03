@@ -1,50 +1,59 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import axiosInstance from "../../axiosConfig";
+import { useAuth } from "../../context/AuthContext";
 import ActionButtons from "./ActionButtons";
 import EventModal from "./EventModal";
 
-const sampleEvents = [
-  {
-    name: "Hello Events",
-    attendees: ["SP", "PP", "MM"],
-    from: "15/06/2009 13:45:30",
-    to: "15/06/2009 13:45:30",
-    status: "Published",
-  },
-  {
-    name: "Students Meet",
-    attendees: ["SP", "PP"],
-    from: "15/06/2009 13:45:30",
-    to: "15/06/2009 13:45:30",
-    status: "Published",
-  },
-  {
-    name: "Summer Camp",
-    attendees: ["SP", "PP", "MM"],
-    from: "15/06/2009 13:45:30",
-    to: "15/06/2009 13:45:30",
-    status: "Draft",
-  },
-];
-
 const EventTable = () => {
+  const [events, setEvents] = useState([]); // Initially empty
   const [showModal, setShowModal] = useState(false);
+  const [editingEvent, setEditingEvent] = useState(null);
+  const { user } = useAuth();
+
+  // ✅ Fetch events from the backend when the component mounts
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const response = await axiosInstance.get("/api/events", {
+          headers: {
+            Authorization: `Bearer ${user?.token}`,
+          },
+        });
+        setEvents(response.data); // Update state with fetched events
+      } catch (error) {
+        console.error("Error fetching events:", error);
+      }
+    };
+
+    if (user?.token) {
+      fetchEvents();
+    }
+  }, [user]);
 
   const handleAddNew = () => {
+    setEditingEvent(null);
     setShowModal(true);
   };
 
   const handleModalSubmit = (newEventData) => {
-    console.log("Submitted event:", newEventData);
-    // Here you can update the sampleEvents list (if you manage it in a parent component)
+    // Update state when a new event is added or updated
+    if (editingEvent) {
+      setEvents(
+        events.map((ev) => (ev._id === newEventData._id ? newEventData : ev))
+      );
+    } else {
+      setEvents([...events, newEventData]);
+    }
   };
+
   return (
     <div className="bg-white rounded p-3 shadow-sm">
       <div className="row">
         <div className="col-md-8">
           <h5>Your Events</h5>
           <p>
-            <i className="bi bi-check2-circle text-primary"></i> 15 New Acquired
-            this month
+            <i className="bi bi-check2-circle text-primary"></i> {events.length}{" "}
+            Events in total
           </p>
         </div>
         <div className="col-md-4 text-end">
@@ -56,6 +65,7 @@ const EventTable = () => {
           </button>
         </div>
       </div>
+
       <table className="table table-hover align-middle">
         <thead>
           <tr>
@@ -68,30 +78,56 @@ const EventTable = () => {
           </tr>
         </thead>
         <tbody>
-          {sampleEvents.map((event, index) => (
+          {events.map((event, index) => (
             <tr key={index}>
-              <td>{event.name}</td>
+              <td>{event.eventName}</td>
               <td>
-                {event.attendees.map((a, idx) => (
-                  <span key={idx} className="border rounded-circle px-2 me-1">
-                    {a}
-                  </span>
-                ))}
+                {event.attendees && event.attendees.length > 0
+                  ? event.attendees.map((a, idx) => (
+                      <span
+                        key={idx}
+                        className="border rounded-circle px-2 me-1"
+                      >
+                        {a}
+                      </span>
+                    ))
+                  : "-"}
               </td>
-              <td>{event.from}</td>
-              <td>{event.to}</td>
-              <td>{event.status}</td>
               <td>
-                <ActionButtons />
+                {event.fromDate
+                  ? new Date(event.fromDate).toLocaleDateString()
+                  : "-"}
+              </td>
+              <td>
+                {event.toDate
+                  ? new Date(event.toDate).toLocaleDateString()
+                  : "-"}
+              </td>
+              <td>{event.eventStatus || "Draft"}</td>
+              <td>
+                <ActionButtons
+                  event={event}
+                  onEdit={() => {
+                    setEditingEvent(event);
+                    setShowModal(true);
+                  }}
+                  events={events}
+                  setEvents={setEvents}
+                  // Delete functionality can be wired here too
+                />
               </td>
             </tr>
           ))}
         </tbody>
       </table>
+
       <EventModal
         show={showModal}
         onClose={() => setShowModal(false)}
-        onSubmit={handleModalSubmit}
+        events={events}
+        setEvents={setEvents}
+        editingEvent={editingEvent}
+        setEditingEvent={setEditingEvent}
       />
     </div>
   );

@@ -12,8 +12,8 @@ import "./App.css";
 import Home from "./pages/Home";
 //import Navbar from "./components/Navbar";
 
-import Login1 from "./pages/Login1";
-import Register1 from "./pages/Register1";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
 
 // Wrapper to conditionally show Navbar
 function AppWrapper() {
@@ -28,8 +28,8 @@ function AppWrapper() {
       {/* {!isAdminRoute && <Navbar />} */}
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/login1" element={<Login1 />} />
-        <Route path="/register1" element={<Register1 />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/events" element={<Events />} />
         <Route path="/admin/*" element={<AdminApp />} />
