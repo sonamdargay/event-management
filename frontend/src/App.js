@@ -15,6 +15,8 @@ import Home from "./pages/Home";
 import Login1 from "./pages/Login1";
 import Register1 from "./pages/Register1";
 import UserPage from "./pages/UserPage";
+import EventsDetails from "./pages/EventsDetails";
+
 
 // Wrapper to conditionally show Navbar
 function AppWrapper() {
@@ -35,6 +37,7 @@ function AppWrapper() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/events" element={<Events />} />
         <Route path="/admin/*" element={<AdminApp />} />
+        <Route path="/event/:id" element={<EventsDetails />} />
       </Routes>
     </>
   );
