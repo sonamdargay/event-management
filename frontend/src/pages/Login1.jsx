@@ -1,4 +1,3 @@
-// src/pages/Login1.jsx
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -12,10 +11,10 @@ export default function Login1() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const resp = await axiosInstance.post("/api/auth/login", formData);
-      login(resp.data);
-      navigate("/events");
-    } catch {
+      const response = await axiosInstance.post("/api/auth/login", formData);
+      login(response.data); // Save token/user data using context
+      navigate("/admin/dashboard"); // Redirect to events page
+    } catch (error) {
       alert("Login failed. Please try again.");
     }
   };
@@ -23,15 +22,14 @@ export default function Login1() {
   return (
     <div className="min-h-screen bg-white">
       {/* 1. top dark bar */}
-      <div
-        className="w-full h-14"
-        style={{ backgroundColor: "#333" }}
-      />
+      <div className="w-full h-14" style={{ backgroundColor: "#333" }} />
 
       {/* 2. Event Management header with line */}
       <div className="w-full pl-12 pr-6 py-6">
         <h1 className="text-3xl font-bold leading-tight">
-          Event<br />Management
+          Event
+          <br />
+          Management
         </h1>
         <div className="border-t border-gray-300 mt-2" />
       </div>
@@ -57,9 +55,7 @@ export default function Login1() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1">
-              Password
-            </label>
+            <label className="block text-sm font-medium mb-1">Password</label>
             <input
               type="password"
               required
