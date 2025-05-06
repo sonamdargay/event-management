@@ -2,7 +2,7 @@ import {
   BrowserRouter as Router,
   Routes,
   Route,
-  useLocation,
+  // useLocation,
 } from "react-router-dom";
 // import Navbar from "./components/Navbar";
 import Profile from "./pages/Profile";
@@ -18,7 +18,7 @@ import UserPage from "./pages/UserPage";
 
 // Wrapper to conditionally show Navbar
 function AppWrapper() {
-  const location = useLocation();
+  // const location = useLocation();
 
   // Check if the current route is under /admin
   // const isAdminRoute = location.pathname.startsWith("/admin");
