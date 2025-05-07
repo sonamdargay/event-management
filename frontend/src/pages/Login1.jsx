@@ -34,7 +34,7 @@ export default function Login1() {
         <div className="border-t border-gray-300 mt-2" />
       </div>
 
-      {/* 3. Your LOG IN form */}
+      {/* 3. LOG IN form */}
       <div className="max-w-md mx-auto px-6">
         <h2 className="text-center text-4xl font-extrabold mb-8">LOG IN</h2>
 

@@ -9,6 +9,7 @@ const events = [
     title: "Music Marathon",
     date: "3rd June",
     location: "Brisbane",
+    description: "A thrilling city marathon featuring live bands across the route."
   },
   {
     id: 2,
@@ -16,6 +17,7 @@ const events = [
     title: "Food Festival",
     date: "15th August",
     location: "Perth",
+    description: "Savor global cuisines and local delights."
   },
   {
     id: 3,
@@ -23,6 +25,7 @@ const events = [
     title: "Music Show",
     date: "20th December",
     location: "Sydney",
+    description: "Live concert with famous artists and DJs."
   },
   {
     id: 4,
@@ -30,6 +33,7 @@ const events = [
     title: "Tech Innovation Expo",
     date: "2nd October",
     location: "Melbourne",
+    description: "Cutting-edge technologies and innovations across industries."
   },
   {
     id: 5,
@@ -37,6 +41,7 @@ const events = [
     title: "Business Conference",
     date: "10th May",
     location: "Sydney",
+    description: "Engage with leaders and professionals in a formal setting."
   },
   {
     id: 6,
@@ -44,11 +49,16 @@ const events = [
     title: "Cultural Night Show",
     date: "16th November",
     location: "Brisbane",
-  },
+    description: "Celebrate diversity with music, dance, and art."
+  }
 ];
 
 export default function UserPage() {
   const navigate = useNavigate();
+
+  const handleViewDetails = (event) => {
+    navigate(`/event/${event.id}`, { state: { event } }); // <-- functionality from new code
+  };
 
   return (
     <div className="min-h-screen bg-white py-8 px-6">
@@ -67,7 +77,7 @@ export default function UserPage() {
                 {event.date}, {event.location}
               </p>
               <button
-                onClick={() => navigate(`/events/${event.id}`)}
+                onClick={() => handleViewDetails(event)}
                 className="mt-4 px-4 py-2 bg-gray-200 font-bold rounded hover:bg-gray-300"
               >
                 View Details
