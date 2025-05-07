@@ -6,7 +6,7 @@ import {
 } from "react-router-dom";
 // import Navbar from "./components/Navbar";
 import Profile from "./pages/Profile";
-import Events from "./pages/Events";
+
 import AdminApp from "./admin/AdminRouter"; // Admin Router
 import "./App.css";
 import Home from "./pages/Home";
@@ -35,7 +35,7 @@ function AppWrapper() {
         <Route path="/register1" element={<Register1 />} />
         <Route path="/userpage" element={<UserPage />} />
         <Route path="/profile" element={<Profile />} />
-        <Route path="/events" element={<Events />} />
+       
         <Route path="/admin/*" element={<AdminApp />} />
         <Route path="/event/:id" element={<EventsDetails />} />
       </Routes>

@@ -1,4 +1,3 @@
-// src/pages/Login1.jsx
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -14,7 +13,14 @@ export default function Login1() {
     try {
       const resp = await axiosInstance.post("/api/auth/login", formData);
       login(resp.data);
-      navigate("/events");
+
+      // Redirect based on role
+      const userRole = resp.data?.user?.role;
+      if (userRole === "admin") {
+        navigate("/admin-dashboard");
+      } else {
+        navigate("/events");
+      }
     } catch {
       alert("Login failed. Please try again.");
     }
@@ -23,10 +29,7 @@ export default function Login1() {
   return (
     <div className="min-h-screen bg-white">
       {/* 1. top dark bar */}
-      <div
-        className="w-full h-14"
-        style={{ backgroundColor: "#333" }}
-      />
+      <div className="w-full h-14" style={{ backgroundColor: "#333" }} />
 
       {/* 2. Event Management header with line */}
       <div className="w-full pl-12 pr-6 py-6">
@@ -36,7 +39,7 @@ export default function Login1() {
         <div className="border-t border-gray-300 mt-2" />
       </div>
 
-      {/* 3. Your LOG IN form */}
+      {/* 3. LOG IN form */}
       <div className="max-w-md mx-auto px-6">
         <h2 className="text-center text-4xl font-extrabold mb-8">LOG IN</h2>
 
