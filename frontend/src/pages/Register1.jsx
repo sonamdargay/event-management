@@ -4,6 +4,7 @@ import axiosInstance from "../axiosConfig";
 
 export default function Register1() {
   const [formData, setFormData] = useState({
+    name: "",
     email: "",
     password: "",
     role: "user", // default role
@@ -24,13 +25,15 @@ export default function Register1() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Top bar */}
+      {/* 1. top dark bar matching Home page */}
       <div className="w-full h-14" style={{ backgroundColor: "#333" }} />
 
       {/* Header */}
       <div className="w-full pl-12 pr-6 py-6">
         <h1 className="text-3xl font-bold leading-tight">
-          Event<br />Management
+          Event
+          <br />
+          Management
         </h1>
         <div className="border-t border-gray-300 mt-2" />
       </div>
@@ -41,6 +44,18 @@ export default function Register1() {
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Email */}
+          <div>
+            <label className="block text-sm font-medium mb-1">Name</label>
+            <input
+              type="text"
+              required
+              value={formData.name}
+              onChange={(e) =>
+                setFormData({ ...formData, name: e.target.value })
+              }
+              className="w-full p-3 bg-gray-100 rounded-md border border-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-400"
+            />
+          </div>
           <div>
             <label className="block text-sm font-medium mb-1">
               Email Address
@@ -135,8 +150,8 @@ export default function Register1() {
         </div>
 
         <p className="text-center text-gray-600 text-sm mt-6">
-          By clicking “Sign up”, you agree to EventBookings Terms & Conditions and
-          have read the Privacy Policy
+          By clicking “Sign up”, you agree to EventBookings Terms &amp;
+          Conditions and have read the Privacy Policy
         </p>
 
         <p className="text-center text-gray-600 text-sm mt-4">

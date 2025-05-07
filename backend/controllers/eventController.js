@@ -1,106 +1,78 @@
-const Event = require("../models/Event");
+const eventService = require("../services/EventService");
+const logger = require("../utils/Logger"); // ✅ Import the logger singleton
 
-// CREATE EVENT
-const addEvent = async (req, res) => {
-  const {
-    eventName,
-    description,
-    fromDate,
-    toDate,
-    location,
-    eventStatus, // Accept status from the body
-  } = req.body;
-
-  try {
-    const event = await Event.create({
-      eventName,
-      description,
-      fromDate,
-      toDate,
-      location,
-      eventStatus,
-      featuredImage: req.file ? req.file.filename : "", // If image uploaded
-    });
-
-    res.status(201).json(event);
-  } catch (error) {
-    console.error("Add Event Error:", error);
-    res.status(500).json({ message: error.message });
-  }
-};
-
-// GET ALL EVENTS
-const getEvents = async (req, res) => {
-  try {
-    const events = await Event.find();
-    res.json(events);
-  } catch (error) {
-    console.error("Get Events Error:", error);
-    res.status(500).json({ message: error.message });
-  }
-};
-
-// GET SINGLE EVENT BY ID (for EventDetails page)
-const getEventById = async (req, res) => {
-  try {
-    const event = await Event.findById(req.params.id);
-    if (!event) {
-      return res.status(404).json({ message: "Event not found" });
+class EventController {
+  // Create event
+  async addEvent(req, res, next) {
+    try {
+      const event = await eventService.addEvent(req.body, req.file);
+      res.status(201).json(event);
+      logger.log(`Event created: ${event.eventName} (ID: ${event._id})`);
+    } catch (error) {
+      logger.error(`Failed to create event: ${error.message}`);
+      next(error); // pass error to errorHandler middleware
     }
-    res.json(event);
-  } catch (error) {
-    console.error("Get Event By ID Error:", error);
-    res.status(500).json({ message: error.message });
   }
-};
 
-// UPDATE EVENT
-const updateEvent = async (req, res) => {
-  const { eventName, description, fromDate, toDate, location, eventStatus } =
-    req.body;
-
-  try {
-    const event = await Event.findById(req.params.id);
-    if (!event) return res.status(404).json({ message: "Event not found" });
-
-    event.eventName = eventName || event.eventName;
-    event.description = description || event.description;
-    event.fromDate = fromDate || event.fromDate;
-    event.toDate = toDate || event.toDate;
-    event.location = location || event.location;
-    event.eventStatus = eventStatus || event.eventStatus;
-
-    if (req.file) {
-      event.featuredImage = req.file.filename;
+  // Get all events
+  async getEvents(req, res, next) {
+    try {
+      const events = await eventService.getEvents();
+      res.json(events);
+      logger.log(`Fetched all events (Total: ${events.length})`);
+    } catch (error) {
+      logger.error(`Failed to fetch events: ${error.message}`);
+      next(error);
     }
-
-    const updatedEvent = await event.save();
-    res.json(updatedEvent);
-  } catch (error) {
-    console.error("Update Event Error:", error);
-    res.status(500).json({ message: error.message });
   }
-};
 
-// DELETE EVENT
-const deleteEvent = async (req, res) => {
-  try {
-    const event = await Event.findById(req.params.id);
-    if (!event) return res.status(404).json({ message: "Event not found" });
-
-    await event.remove();
-    res.json({ message: "Event deleted" });
-  } catch (error) {
-    console.error("Delete Event Error:", error);
-    res.status(500).json({ message: error.message });
+  // Get event by ID
+  async getEventById(req, res, next) {
+    try {
+      const event = await eventService.getEventById(req.params.id);
+      res.json(event);
+      logger.log(`Fetched event by ID: ${req.params.id}`);
+    } catch (error) {
+      logger.error(
+        `Failed to fetch event with ID ${req.params.id}: ${error.message}`
+      );
+      next(error);
+    }
   }
-};
 
-// Export all controllers
-module.exports = {
-  getEvents,
-  getEventById, // IMPORTANT: for viewing event details
-  addEvent,
-  updateEvent,
-  deleteEvent,
-};
+  // Update event
+  async updateEvent(req, res, next) {
+    try {
+      const updatedEvent = await eventService.updateEvent(
+        req.params.id,
+        req.body,
+        req.file
+      );
+      res.json(updatedEvent);
+      logger.log(
+        `Event updated: ${updatedEvent.eventName} (ID: ${req.params.id})`
+      );
+    } catch (error) {
+      logger.error(
+        `Failed to update event with ID ${req.params.id}: ${error.message}`
+      );
+      next(error);
+    }
+  }
+
+  // Delete event
+  async deleteEvent(req, res, next) {
+    try {
+      const result = await eventService.deleteEvent(req.params.id);
+      res.json(result);
+      logger.log(`Event deleted (ID: ${req.params.id})`);
+    } catch (error) {
+      logger.error(
+        `Failed to delete event with ID ${req.params.id}: ${error.message}`
+      );
+      next(error);
+    }
+  }
+}
+
+module.exports = new EventController();
