@@ -93,7 +93,6 @@ const EventModal = ({
         setEvents([...events, response.data]);
         console.log("New event added:", response.data);
       }
-
       setEditingEvent(null);
       onClose();
     } catch (error) {
