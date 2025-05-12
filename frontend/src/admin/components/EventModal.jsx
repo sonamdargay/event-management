@@ -94,8 +94,6 @@ const EventModal = ({
         setEvents([...events, response.data]);
         console.log("New event added:", response.data);
       }
-      // console.log(" emmission of broadcast during submit")
-      // eventBus.emit('broadcastEmitted', " Event has just been updated. Check now")
       setEditingEvent(null);
       onClose();
     } catch (error) {
