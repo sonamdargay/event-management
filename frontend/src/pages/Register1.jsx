@@ -18,9 +18,10 @@ export default function Register1() {
       await axiosInstance.post("/api/auth/register", formData);
       alert("Registration successful. Please log in.");
       navigate("/login1");
-    } catch {
-      alert("Registration failed. Please try again.");
-    }
+    } catch (err) {
+  console.error("Register failed:", err.response?.data || err.message);
+  alert(err.response?.data?.message || "Registration failed. Please try again.");
+}
   };
 
   return (

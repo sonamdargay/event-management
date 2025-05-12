@@ -11,9 +11,22 @@ export default function Login1() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axiosInstance.post("/api/auth/login", formData);
-      login(response.data); // Save token/user data using context
-      navigate("/admin/dashboard"); // Redirect to events page
+      const userData = await axiosInstance.post("/api/auth/login", formData);
+      login(userData.data); // Save token/user data using context
+    
+      // from the response data, we need to decide whether to redirect to admin or user
+
+      console.log(userData);
+      console.log(userData.data.role);
+
+      
+      if (userData?.data.role == 'admin') {
+        console.log('this user is an admin, redirecting to admin dashboard..');
+        navigate("/admin/dashboard"); // Redirect to events page
+      } else {
+        console.log('this user is not an admin, redirecting to user page..');
+        navigate("/userpage")
+      }
     } catch (error) {
       alert("Login failed. Please try again.");
     }
@@ -25,22 +38,22 @@ export default function Login1() {
       <div className="w-full h-14" style={{ backgroundColor: "#333" }} />
 
       {/* 2. Event Management header with line */}
-      <div className="w-full pl-12 pr-6 py-6">
+      <div className="w-full py-6 pl-12 pr-6">
         <h1 className="text-3xl font-bold leading-tight">
           Event
           <br />
           Management
         </h1>
-        <div className="border-t border-gray-300 mt-2" />
+        <div className="mt-2 border-t border-gray-300" />
       </div>
 
       {/* 3. LOG IN form */}
-      <div className="max-w-md mx-auto px-6">
-        <h2 className="text-center text-4xl font-extrabold mb-8">LOG IN</h2>
+      <div className="max-w-md px-6 mx-auto">
+        <h2 className="mb-8 text-4xl font-extrabold text-center">LOG IN</h2>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label className="block text-sm font-medium mb-1">
+            <label className="block mb-1 text-sm font-medium">
               Email Address
             </label>
             <input
@@ -50,12 +63,12 @@ export default function Login1() {
               onChange={(e) =>
                 setFormData({ ...formData, email: e.target.value })
               }
-              className="w-full p-3 bg-gray-100 rounded-md border border-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-400"
+              className="w-full p-3 bg-gray-100 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-400"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1">Password</label>
+            <label className="block mb-1 text-sm font-medium">Password</label>
             <input
               type="password"
               required
@@ -63,14 +76,14 @@ export default function Login1() {
               onChange={(e) =>
                 setFormData({ ...formData, password: e.target.value })
               }
-              className="w-full p-3 bg-gray-100 rounded-md border border-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-400"
+              className="w-full p-3 bg-gray-100 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-400"
             />
           </div>
 
           <div className="flex items-center justify-between">
             <button
               type="submit"
-              className="bg-black text-white w-32 py-3 rounded-md hover:opacity-90"
+              className="w-32 py-3 text-white bg-black rounded-md hover:opacity-90"
             >
               Log in
             </button>
@@ -83,7 +96,7 @@ export default function Login1() {
           </div>
         </form>
 
-        <p className="text-center text-sm text-gray-700 mt-6">
+        <p className="mt-6 text-sm text-center text-gray-700">
           Don’t have an account?{" "}
           <a
             href="/register1"
@@ -94,7 +107,7 @@ export default function Login1() {
         </p>
 
         <div className="mt-6 space-y-3">
-          <button className="w-full flex items-center justify-center p-3 bg-gray-100 rounded-md hover:bg-gray-200">
+          <button className="flex items-center justify-center w-full p-3 bg-gray-100 rounded-md hover:bg-gray-200">
             <img
               src="https://img.icons8.com/color/16/google-logo.png"
               alt="Google"
@@ -102,7 +115,7 @@ export default function Login1() {
             />
             Sign up with Google
           </button>
-          <button className="w-full flex items-center justify-center p-3 bg-gray-100 rounded-md hover:bg-gray-200">
+          <button className="flex items-center justify-center w-full p-3 bg-gray-100 rounded-md hover:bg-gray-200">
             <img
               src="https://img.icons8.com/ios-filled/16/mac-os.png"
               alt="Apple"
@@ -112,7 +125,7 @@ export default function Login1() {
           </button>
           <button
             type="button"
-            className="w-full flex items-center justify-center p-3 bg-gray-100 rounded-md hover:bg-gray-200"
+            className="flex items-center justify-center w-full p-3 bg-gray-100 rounded-md hover:bg-gray-200"
           >
             <img
               src="https://img.icons8.com/color/16/facebook-new.png"

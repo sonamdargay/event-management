@@ -10,13 +10,13 @@ class AuthService {
   }
 
   // Register user logic
-  async registerUser({ name, email, password }) {
+  async registerUser({ name, email, password, role }) {
     const userExists = await User.findOne({ email });
     if (userExists) {
       throw ErrorFactory.create("ValidationError", "User already exists");
     }
-
-    const user = await User.create({ name, email, password });
+    
+    const user = await User.create({ name, email, password, role: role || "user" });
 
     return {
       id: user.id,
@@ -30,10 +30,14 @@ class AuthService {
   async loginUser({ email, password }) {
     const user = await User.findOne({ email });
     if (user && (await bcrypt.compare(password, user.password))) {
+
+      console.log(user);
+
       return {
         id: user.id,
         name: user.name,
         email: user.email,
+        role: user.role,
         token: this.generateToken(user.id),
       };
     } else {
