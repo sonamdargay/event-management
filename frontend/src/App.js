@@ -17,6 +17,7 @@ import Register1 from "./pages/Register1";
 import UserPage from "./pages/UserPage";
 import EventsDetails from "./pages/EventsDetails";
 import EventBroadCastListener from "./admin/components/EventBroadcastListener";
+import Funding from "./pages/Funding";
 
 
 // Wrapper to conditionally show Navbar
@@ -37,6 +38,7 @@ function AppWrapper() {
         <Route path="/register1" element={<Register1 />} />
         <Route path="/userpage" element={<UserPage />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/funding" element={<Funding />} />
        
         <Route path="/admin/*" element={<AdminApp />} />
         <Route path="/event/:id" element={<EventsDetails />} />

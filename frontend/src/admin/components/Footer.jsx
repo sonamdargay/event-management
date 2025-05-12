@@ -4,8 +4,11 @@ const Footer = () => (
       <a href="qut.edu.au" className="me-3 text-decoration-none text-muted">
         Privacy Policy
       </a>
-      <a href="google.com" className="text-decoration-none text-muted">
+      <a href="google.com" className="me-3 text-decoration-none text-muted">
         Terms of Use
+      </a>
+      <a href="/funding" className="text-decoration-none text-muted">
+          Fund Us
       </a>
     </div>
     <div className="text-muted">
