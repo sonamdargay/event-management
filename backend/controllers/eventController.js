@@ -1,5 +1,5 @@
 const eventService = require("../services/EventService");
-const logger = require("../utils/Logger"); // ✅ Import the logger singleton
+const logger = require("../utils/Logger"); // Import the logger singleton
 
 class EventController {
   // Create event

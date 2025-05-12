@@ -1,12 +1,12 @@
 const authService = require("../services/AuthService");
-const logger = require("../utils/Logger"); // ✅ Import the logger singleton
+const logger = require("../utils/Logger"); // Import the logger singleton
 
 class AuthController {
   // Register user
   async registerUser(req, res, next) {
-    const { name, email, password } = req.body;
+    const { name, email, password, role } = req.body;
     try {
-      const result = await authService.registerUser({ name, email, password });
+      const result = await authService.registerUser({ name, email, password, role });
       res.status(201).json(result);
       logger.log(`New user registered: ${email}`);
     } catch (error) {

@@ -47,7 +47,7 @@ const EventTable = () => {
   };
 
   return (
-    <div className="bg-white rounded p-3 shadow-sm">
+    <div className="p-3 bg-white rounded shadow-sm">
       <div className="row">
         <div className="col-md-8">
           <h5>Your Events</h5>
@@ -66,7 +66,7 @@ const EventTable = () => {
         </div>
       </div>
 
-      <table className="table table-hover align-middle">
+      <table className="table align-middle table-hover">
         <thead>
           <tr>
             <th>Event Name</th>
@@ -86,7 +86,7 @@ const EventTable = () => {
                   ? event.attendees.map((a, idx) => (
                       <span
                         key={idx}
-                        className="border rounded-circle px-2 me-1"
+                        className="px-2 border rounded-circle me-1"
                       >
                         {a}
                       </span>

@@ -1,6 +1,9 @@
 // src/pages/Home.jsx
 import React from "react";
 import { Link } from "react-router-dom";
+import { useState, useEffect } from 'react';
+import { useAuth } from "../context/AuthContext";
+import axiosInstance from "../axiosConfig";
 
 const images = [
   "/images/img-1.jpg",
@@ -10,6 +13,25 @@ const images = [
 ];
 
 export default function Home() {
+
+const [events, setEvents] = useState([]); // Initially empty
+
+useEffect(() => {
+  
+    const fetchEvents = async () => {
+      try {
+        const response = await axiosInstance.get("/api/events");
+        console.log(response.data)
+        setEvents(response.data); // Update state with fetched events
+      } catch (error) {
+        console.error("Error fetching events:", error);
+      }
+    };
+    
+    fetchEvents();
+  
+  }, []);
+  
   return (
     <div className="page-container">
       {/* HEADER */}
@@ -68,14 +90,29 @@ export default function Home() {
       </section>
 
       {/* UPCOMING EVENTS */}
+
+      {/* Inside MongoDB, we need to make an events table, that contains rows such as: Event Name, Event Type, Image_URL, created_by: [links to user_id (admin user)] */}
+      {/* Need to make a call on the home page that reads from the MongoDB server, and then renders the results from the json response below */}
+
       <section className="upcoming">
         <h3><b>Upcoming Events</b></h3>
         <div className="events-grid">
+          {/* Instead of the hardcoded images below here */}
           {images.map((src, i) => (
             <div key={i} className="card">
               <img src={src} alt={`Event ${i + 1}`} />
             </div>
           ))}
+          {/* Replace this with the events table response.json, and map the array of objects */}
+          {events.map((ev, i) => (
+            <div key={i} className="card">
+              <h1>
+                {ev.eventName}
+              </h1>
+              <p>testing event #{i}+{ev._id}</p>
+
+            </div>
+        ))}
         </div>
       </section>
     </div>

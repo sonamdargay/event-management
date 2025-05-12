@@ -17,18 +17,18 @@ const Topbar = ({ onToggleSidebar }) => {
   };
 
   return (
-    <div className="topbar d-flex justify-content-between align-items-center p-3 bg-white border-bottom">
+    <div className="p-3 bg-white topbar d-flex justify-content-between align-items-center border-bottom">
       <div className="d-flex align-items-center">
         <button
           onClick={onToggleSidebar}
           className="btn btn-primary rounded-circle me-3"
           style={{ width: "40px", height: "40px" }}
         >
-          <i className="bi bi-arrow-left text-white"></i>
+          <i className="text-white bi bi-arrow-left"></i>
         </button>
 
         <div className="input-group" style={{ width: "250px" }}>
-          <span className="input-group-text bg-white border-end-0">
+          <span className="bg-white input-group-text border-end-0">
             <i className="bi bi-search text-muted"></i>
           </span>
           <input
@@ -48,12 +48,12 @@ const Topbar = ({ onToggleSidebar }) => {
         >
           {user?.name || "Guest"}
           <br />
-          <small>Events Manager</small>
+          <small>{user?.role === 'admin' ? 'Events Manager' : 'User'}</small>
         </div>
 
         {showLogout && (
           <div
-            className="position-absolute top-100 end-0 bg-white border rounded p-2 shadow-sm"
+            className="p-2 bg-white border rounded shadow-sm position-absolute top-100 end-0"
             style={{ zIndex: 1000 }}
           >
             <button

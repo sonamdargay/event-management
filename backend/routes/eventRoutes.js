@@ -31,7 +31,8 @@ const upload = multer({ storage });
 
 router
   .route("/")
-  .get(protect, getEvents)
+  .get(getEvents)
+  // .get(protect, getEvents)
   .post(protect, upload.single("featuredImage"), addEvent);
 
 router

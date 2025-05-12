@@ -1,6 +1,7 @@
 // src/pages/UserPage.jsx
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import Topbar from "../admin/components/Topbar";
 
 const events = [
   {
@@ -56,29 +57,36 @@ const events = [
 export default function UserPage() {
   const navigate = useNavigate();
 
+ 
+
+
   const handleViewDetails = (event) => {
     navigate(`/event/${event.id}`, { state: { event } }); // <-- functionality from new code
   };
 
   return (
-    <div className="min-h-screen bg-white py-8 px-6">
-      <h2 className="text-3xl font-bold mb-6 text-center">Upcoming Events</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    // render a topbar for users to logout
+    <>
+    <Topbar />
+    
+    <div className="min-h-screen px-6 py-8 bg-white">
+      <h2 className="mb-6 text-3xl font-bold text-center">Upcoming Events</h2>
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {events.map((event) => (
-          <div key={event.id} className="bg-gray-100 rounded-lg overflow-hidden">
+          <div key={event.id} className="overflow-hidden bg-gray-100 rounded-lg">
             <img
               src={event.image}
               alt={event.title}
-              className="w-full h-48 object-cover"
+              className="object-cover w-full h-48"
             />
             <div className="p-4">
               <h3 className="text-xl font-semibold">{event.title}</h3>
-              <p className="text-gray-600 mt-1">
+              <p className="mt-1 text-gray-600">
                 {event.date}, {event.location}
               </p>
               <button
                 onClick={() => handleViewDetails(event)}
-                className="mt-4 px-4 py-2 bg-gray-200 font-bold rounded hover:bg-gray-300"
+                className="px-4 py-2 mt-4 font-bold bg-gray-200 rounded hover:bg-gray-300"
               >
                 View Details
               </button>
@@ -87,5 +95,6 @@ export default function UserPage() {
         ))}
       </div>
     </div>
+    </>
   );
 }
