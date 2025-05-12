@@ -9,6 +9,7 @@ const {
 const { protect } = require("../middleware/authMiddleware");
 const multer = require("multer");
 const fs = require("fs");
+const { io } = require('../server');
 
 const router = express.Router();
 
@@ -29,6 +30,11 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
+const emitEventUpdate = (message) => {
+  console.log("Event Updated emitted");
+  global.io.emit('eventUpdated', { message });
+};
+
 router
   .route("/")
   .get(protect, getEvents)
@@ -37,7 +43,14 @@ router
 router
   .route("/:id")
   .get(protect, getEventById)
-  .put(protect, upload.single("featuredImage"), updateEvent)
+  .put(protect, upload.single("featuredImage"), async (req, res) => {
+    try {
+      const event = await updateEvent(req, res);
+      emitEventUpdate("Event Updated");
+    } catch (err) {
+      // already handled by updateEvent method itself so no need to handle here.
+    }
+  })
   .delete(protect, deleteEvent);
 
 module.exports = router;

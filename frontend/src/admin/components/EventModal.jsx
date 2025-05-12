@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
 import axiosInstance from "../../axiosConfig";
+import { eventBus } from "./EventBus";
 
 const EventModal = ({
   show,
@@ -93,7 +94,8 @@ const EventModal = ({
         setEvents([...events, response.data]);
         console.log("New event added:", response.data);
       }
-
+      // console.log(" emmission of broadcast during submit")
+      // eventBus.emit('broadcastEmitted', " Event has just been updated. Check now")
       setEditingEvent(null);
       onClose();
     } catch (error) {
