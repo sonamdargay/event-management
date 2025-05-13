@@ -16,6 +16,8 @@ import Login1 from "./pages/Login1";
 import Register1 from "./pages/Register1";
 import UserPage from "./pages/UserPage";
 import EventsDetails from "./pages/EventsDetails";
+import EventBroadCastListener from "./admin/components/EventBroadcastListener";
+import Funding from "./pages/Funding";
 
 
 // Wrapper to conditionally show Navbar
@@ -29,12 +31,14 @@ function AppWrapper() {
     <>
       {/* Only show Navbar on non-admin routes */}
       {/* {!isAdminRoute && <Navbar />} */}
+      <EventBroadCastListener/>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login1" element={<Login1 />} />
         <Route path="/register1" element={<Register1 />} />
         <Route path="/userpage" element={<UserPage />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/funding" element={<Funding />} />
        
         <Route path="/admin/*" element={<AdminApp />} />
         <Route path="/event/:id" element={<EventsDetails />} />
