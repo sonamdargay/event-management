@@ -36,6 +36,7 @@
     transform: rotate(360deg);
   }
 }
+
 /*Home Page CSS*/
 .page-container {
   background: #f9fafb;
@@ -130,3 +131,134 @@
   border-radius: 8px;
 }
 
+/* Integrated event card styles */
+.upcoming .events-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); 
+  gap: 24px;
+  margin-bottom: 30px;
+}
+
+.upcoming .event-card {
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  width: 100%;
+  height: 360px; 
+  display: flex;
+  flex-direction: column;
+}
+
+.upcoming .event-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+}
+
+.upcoming .event-image {
+  width: 100%;
+  height: 180px; 
+  overflow: hidden;
+  flex-shrink: 0; 
+}
+
+.upcoming .event-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.upcoming .event-card:hover .event-image img {
+  transform: scale(1.05);
+}
+
+.upcoming .event-info {
+  padding: 16px;
+  flex-grow: 1; 
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; 
+}
+
+.upcoming .event-info h4 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 1.2rem; 
+  color: #333;
+ white-space: normal; 
+  overflow: visible; 
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.3;
+}
+
+.upcoming .event-info .date-info,
+.upcoming .event-info .location-info {
+  margin: 5px 0; 
+  color: #555;
+  font-size: 0.9rem; 
+}
+
+.upcoming .event-info .description {
+  margin-top: 8px;
+  font-size: 0.85rem; 
+  color: #666;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; 
+  -webkit-box-orient: vertical;
+  flex-grow: 1; 
+}
+
+/* Placeholder card styles */
+.upcoming .placeholder-card .event-info {
+  background-color: #f9f9f9;
+}
+
+.upcoming .placeholder-card h4 {
+  color: #666;
+}
+
+.upcoming .placeholder-card .description {
+  font-style: italic;
+  color: #888;
+}
+
+/* Coming soon overlay */
+.upcoming .placeholder-card .event-image {
+  position: relative;
+}
+
+.upcoming .placeholder-card .event-image::after {
+  content: "Coming Soon";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+/* Responsive layout */
+@media (max-width: 1000px) {
+  .upcoming .events-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .upcoming .events-grid {
+    grid-template-columns: 1fr;
+  }
+}
