@@ -13,19 +13,18 @@ export default function Login1() {
     try {
       const userData = await axiosInstance.post("/api/auth/login", formData);
       login(userData.data); // Save token/user data using context
-    
+
       // from the response data, we need to decide whether to redirect to admin or user
 
       console.log(userData);
       console.log(userData.data.role);
 
-      
-      if (userData?.data.role == 'admin') {
-        console.log('this user is an admin, redirecting to admin dashboard..');
+      if (userData?.data.role === "admin") {
+        console.log("this user is an admin, redirecting to admin dashboard..");
         navigate("/admin/dashboard"); // Redirect to events page
       } else {
-        console.log('this user is not an admin, redirecting to user page..');
-        navigate("/userpage")
+        console.log("this user is not an admin, redirecting to user page..");
+        navigate("/userpage");
       }
     } catch (error) {
       alert("Login failed. Please try again.");
