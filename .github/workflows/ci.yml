@@ -39,6 +39,10 @@ jobs:
 
       - run: pm2 stop all
 
+      # Install root dependencies (includes socket.io-client)
+      - name: Install Root Dependencies
+        run: yarn install
+
       # Install dependencies for backend
       - name: Install Backend Dependencies
         working-directory: ./backend
