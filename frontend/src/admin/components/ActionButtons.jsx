@@ -1,5 +1,4 @@
 import { useState } from "react";
-import EventModal from "./EventModal";
 import DeleteModal from "./DeleteModal";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../axiosConfig";

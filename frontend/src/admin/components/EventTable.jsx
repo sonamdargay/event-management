@@ -10,7 +10,7 @@ const EventTable = () => {
   const [editingEvent, setEditingEvent] = useState(null);
   const { user } = useAuth();
 
-  // ✅ Fetch events from the backend when the component mounts
+  // Fetch events from the backend when the component mounts
   useEffect(() => {
     const fetchEvents = async () => {
       try {
@@ -35,16 +35,16 @@ const EventTable = () => {
     setShowModal(true);
   };
 
-  const handleModalSubmit = (newEventData) => {
-    // Update state when a new event is added or updated
-    if (editingEvent) {
-      setEvents(
-        events.map((ev) => (ev._id === newEventData._id ? newEventData : ev))
-      );
-    } else {
-      setEvents([...events, newEventData]);
-    }
-  };
+  // const handleModalSubmit = (newEventData) => {
+  //   // Update state when a new event is added or updated
+  //   if (editingEvent) {
+  //     setEvents(
+  //       events.map((ev) => (ev._id === newEventData._id ? newEventData : ev))
+  //     );
+  //   } else {
+  //     setEvents([...events, newEventData]);
+  //   }
+  // };
 
   return (
     <div className="p-3 bg-white rounded shadow-sm">

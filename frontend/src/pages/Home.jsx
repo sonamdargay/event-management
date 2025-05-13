@@ -1,8 +1,8 @@
 // src/pages/Home.jsx
 import React from "react";
 import { Link } from "react-router-dom";
-import { useState, useEffect } from 'react';
-import { useAuth } from "../context/AuthContext";
+import { useState, useEffect } from "react";
+// import { useAuth } from "../context/AuthContext";
 import axiosInstance from "../axiosConfig";
 
 const images = [
@@ -13,25 +13,22 @@ const images = [
 ];
 
 export default function Home() {
+  const [events, setEvents] = useState([]); // Initially empty
 
-const [events, setEvents] = useState([]); // Initially empty
-
-useEffect(() => {
-  
+  useEffect(() => {
     const fetchEvents = async () => {
       try {
         const response = await axiosInstance.get("/api/events");
-        console.log(response.data)
+        console.log(response.data);
         setEvents(response.data); // Update state with fetched events
       } catch (error) {
         console.error("Error fetching events:", error);
       }
     };
-    
+
     fetchEvents();
-  
   }, []);
-  
+
   return (
     <div className="page-container">
       {/* HEADER */}
@@ -95,7 +92,9 @@ useEffect(() => {
       {/* Need to make a call on the home page that reads from the MongoDB server, and then renders the results from the json response below */}
 
       <section className="upcoming">
-        <h3><b>Upcoming Events</b></h3>
+        <h3>
+          <b>Upcoming Events</b>
+        </h3>
         <div className="events-grid">
           {/* Instead of the hardcoded images below here */}
           {images.map((src, i) => (
@@ -106,13 +105,12 @@ useEffect(() => {
           {/* Replace this with the events table response.json, and map the array of objects */}
           {events.map((ev, i) => (
             <div key={i} className="card">
-              <h1>
-                {ev.eventName}
-              </h1>
-              <p>testing event #{i}+{ev._id}</p>
-
+              <h1>{ev.eventName}</h1>
+              <p>
+                testing event #{i}+{ev._id}
+              </p>
             </div>
-        ))}
+          ))}
         </div>
       </section>
     </div>
