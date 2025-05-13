@@ -55,6 +55,7 @@ jobs:
       - name: Install Frontend Dependencies
         working-directory: ./frontend
         run: |
+          echo "REACT_APP_API_BASE_URL=${{ secrets.REACT_APP_API_BASE_URL }}" > .env.production
           df -h
           sudo rm -rf ./build
           yarn install
