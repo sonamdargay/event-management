@@ -1,9 +1,7 @@
 const chai = require("chai");
 const sinon = require("sinon");
 const chaiHttp = require("chai-http");
-const mongoose = require("mongoose");
 
-const app = require("../server");
 const eventController = require("../controllers/eventController");
 const eventService = require("../services/EventService");
 
@@ -34,6 +32,7 @@ describe("EventController Tests", () => {
         date: "2025-12-31",
         location: "Thimphu",
       };
+      req.file = { originalname: "image.jpg", buffer: Buffer.from("dummy") };
 
       const createdEvent = { _id: "abc123", ...req.body };
 
@@ -41,9 +40,9 @@ describe("EventController Tests", () => {
 
       await eventController.addEvent(req, res, next);
 
-      expect(res.status.calledWith(201)).to.be.true;
-      expect(res.json.calledWith(createdEvent)).to.be.true;
-      expect(next.called).to.be.false;
+      expect(res.status.calledOnceWith(201)).to.be.true;
+      expect(res.json.calledOnceWith(createdEvent)).to.be.true;
+      expect(next.notCalled).to.be.true;
     });
 
     it("should call next on error", async () => {
@@ -52,111 +51,109 @@ describe("EventController Tests", () => {
 
       await eventController.addEvent(req, res, next);
 
-      expect(next.calledWith(error)).to.be.true;
+      expect(next.calledOnceWith(error)).to.be.true;
     });
   });
 
   describe("getEvents", () => {
     it("should return all events", async () => {
       const mockEvents = [
-        { _id: "1", eventName: "Tech Conf" },
-        { _id: "2", eventName: "Hackathon" },
+        { _id: "1", eventName: "A" },
+        { _id: "2", eventName: "B" },
       ];
-
       sinon.stub(eventService, "getEvents").resolves(mockEvents);
 
       await eventController.getEvents(req, res, next);
 
-      expect(res.json.calledWith(mockEvents)).to.be.true;
-      expect(next.called).to.be.false;
+      expect(res.json.calledOnceWith(mockEvents)).to.be.true;
+      expect(next.notCalled).to.be.true;
     });
 
     it("should call next on error", async () => {
-      const error = new Error("Failed to fetch");
+      const error = new Error("DB error");
       sinon.stub(eventService, "getEvents").rejects(error);
 
       await eventController.getEvents(req, res, next);
 
-      expect(next.calledWith(error)).to.be.true;
+      expect(next.calledOnceWith(error)).to.be.true;
     });
   });
 
   describe("getEventById", () => {
-    it("should return an event by ID", async () => {
-      req.params = { id: "abc123" };
-      const mockEvent = { _id: "abc123", eventName: "Test Event" };
+    it("should return a specific event", async () => {
+      req.params = { id: "123" };
+      const mockEvent = { _id: "123", eventName: "Special Event" };
 
       sinon.stub(eventService, "getEventById").resolves(mockEvent);
 
       await eventController.getEventById(req, res, next);
 
-      expect(res.json.calledWith(mockEvent)).to.be.true;
+      expect(res.json.calledOnceWith(mockEvent)).to.be.true;
+      expect(next.notCalled).to.be.true;
     });
 
     it("should call next on error", async () => {
       req.params = { id: "invalid" };
-      const error = new Error("Not Found");
+      const error = new Error("Not found");
 
       sinon.stub(eventService, "getEventById").rejects(error);
 
       await eventController.getEventById(req, res, next);
 
-      expect(next.calledWith(error)).to.be.true;
+      expect(next.calledOnceWith(error)).to.be.true;
     });
   });
 
   describe("updateEvent", () => {
     it("should update an event", async () => {
-      req.params = { id: "abc123" };
-      req.body = {
-        eventName: "Updated Event",
-        description: "Updated Desc",
-        date: "2025-06-01",
-        location: "Updated City",
-      };
+      req.params = { id: "456" };
+      req.body = { eventName: "Updated Event" };
+      req.file = { originalname: "update.jpg", buffer: Buffer.from("content") };
 
-      const updatedEvent = { _id: "abc123", ...req.body };
+      const updatedEvent = { _id: "456", ...req.body };
 
       sinon.stub(eventService, "updateEvent").resolves(updatedEvent);
 
       await eventController.updateEvent(req, res, next);
 
-      expect(res.json.calledWith(updatedEvent)).to.be.true;
+      expect(res.json.calledOnceWith(updatedEvent)).to.be.true;
+      expect(next.notCalled).to.be.true;
     });
 
     it("should call next on error", async () => {
-      req.params = { id: "abc123" };
+      req.params = { id: "456" };
       const error = new Error("Update failed");
 
       sinon.stub(eventService, "updateEvent").rejects(error);
 
       await eventController.updateEvent(req, res, next);
 
-      expect(next.calledWith(error)).to.be.true;
+      expect(next.calledOnceWith(error)).to.be.true;
     });
   });
 
   describe("deleteEvent", () => {
     it("should delete an event", async () => {
-      req.params = { id: "abc123" };
+      req.params = { id: "789" };
       const result = { message: "Event deleted" };
 
       sinon.stub(eventService, "deleteEvent").resolves(result);
 
       await eventController.deleteEvent(req, res, next);
 
-      expect(res.json.calledWith(result)).to.be.true;
+      expect(res.json.calledOnceWith(result)).to.be.true;
+      expect(next.notCalled).to.be.true;
     });
 
     it("should call next on error", async () => {
-      req.params = { id: "abc123" };
+      req.params = { id: "789" };
       const error = new Error("Delete failed");
 
       sinon.stub(eventService, "deleteEvent").rejects(error);
 
       await eventController.deleteEvent(req, res, next);
 
-      expect(next.calledWith(error)).to.be.true;
+      expect(next.calledOnceWith(error)).to.be.true;
     });
   });
 });
