@@ -2,18 +2,20 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
-// import { useAuth } from "../context/AuthContext";
 import axiosInstance from "../axiosConfig";
 
-const images = [
+// Fixed image collection
+const eventImages = [
   "/images/img-1.jpg",
   "/images/img-2.jpg",
   "/images/img-3.jpg",
   "/images/img-4.jpeg",
+  "/images/img-5.jpg",
+  "/images/img-6.webp",
 ];
 
 export default function Home() {
-  const [events, setEvents] = useState([]); // Initially empty
+  const [events, setEvents] = useState([]);
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -28,6 +30,30 @@ export default function Home() {
 
     fetchEvents();
   }, []);
+
+  // Filter published events
+  const publishedEvents = events.filter(
+    (event) => event.eventStatus === "Published"
+  );
+
+  // Create array of event cards to display
+  const displayEvents = [];
+
+  // Add published events
+  for (let i = 0; i < Math.min(publishedEvents.length, 6); i++) {
+    displayEvents.push({
+      type: "real",
+      event: publishedEvents[i],
+    });
+  }
+
+  // Add placeholder event cards
+  for (let i = displayEvents.length; i < 6; i++) {
+    displayEvents.push({
+      type: "placeholder",
+      imageIndex: i,
+    });
+  }
 
   return (
     <div className="page-container">
@@ -87,30 +113,65 @@ export default function Home() {
       </section>
 
       {/* UPCOMING EVENTS */}
-
-      {/* Inside MongoDB, we need to make an events table, that contains rows such as: Event Name, Event Type, Image_URL, created_by: [links to user_id (admin user)] */}
-      {/* Need to make a call on the home page that reads from the MongoDB server, and then renders the results from the json response below */}
-
       <section className="upcoming">
         <h3>
           <b>Upcoming Events</b>
         </h3>
+
+        {/* Event cards */}
         <div className="events-grid">
-          {/* Instead of the hardcoded images below here */}
-          {images.map((src, i) => (
-            <div key={i} className="card">
-              <img src={src} alt={`Event ${i + 1}`} />
-            </div>
-          ))}
-          {/* Replace this with the events table response.json, and map the array of objects */}
-          {events.map((ev, i) => (
-            <div key={i} className="card">
-              <h1>{ev.eventName}</h1>
-              <p>
-                testing event #{i}+{ev._id}
-              </p>
-            </div>
-          ))}
+          {displayEvents.map((item, index) => {
+            if (item.type === "real") {
+              // Real event with data from database
+              const event = item.event;
+              // Format dates
+              const fromDate = new Date(event.fromDate).toLocaleDateString();
+              const toDate = new Date(event.toDate).toLocaleDateString();
+              const dateDisplay =
+                fromDate === toDate ? fromDate : `${fromDate} - ${toDate}`;
+
+              return (
+                <div key={event._id} className="event-card">
+                  <div className="event-image">
+                    <img
+                      src={eventImages[index % eventImages.length]}
+                      alt={event.eventName}
+                    />
+                  </div>
+                  <div className="event-info">
+                    <h4>{event.eventName}</h4>
+                    <p className="date-info">
+                      <strong>Date:</strong> {dateDisplay}
+                    </p>
+                    <p className="location-info">
+                      <strong>Location:</strong> {event.location}
+                    </p>
+                    {event.description && (
+                      <p className="description">{event.description}</p>
+                    )}
+                  </div>
+                </div>
+              );
+            } else {
+              // Placeholder event card
+              return (
+                <div
+                  key={`placeholder-${index}`}
+                  className="event-card placeholder-card"
+                >
+                  <div className="event-image">
+                    <img src={eventImages[item.imageIndex]} alt="Coming soon" />
+                  </div>
+                  <div className="event-info">
+                    <h4>More events coming soon</h4>
+                    <p className="description">
+                      Stay tuned for upcoming events and activities.
+                    </p>
+                  </div>
+                </div>
+              );
+            }
+          })}
         </div>
       </section>
     </div>
