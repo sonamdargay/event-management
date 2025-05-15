@@ -6,6 +6,8 @@ const errorHandler = require("./middleware/errorHandler");
 const logger = require("./utils/Logger");
 const http = require("http");
 const socketIo = require("socket.io");
+const eventRegistrationRoutes = require('./routes/eventRegistration');
+
 
 dotenv.config();
 
@@ -28,6 +30,7 @@ app.use(express.json());
 // Routes
 app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/events", require("./routes/eventRoutes"));
+app.use('/api/event-registration', eventRegistrationRoutes);
 
 // Serve uploaded files
 app.use("/uploads", express.static("uploads"));

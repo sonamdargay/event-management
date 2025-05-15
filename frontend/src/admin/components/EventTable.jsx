@@ -4,13 +4,12 @@ import { useAuth } from "../../context/AuthContext";
 import ActionButtons from "./ActionButtons";
 import EventModal from "./EventModal";
 
-const EventTable = () => {
-  const [events, setEvents] = useState([]); // Initially empty
+const EventTable = ({ filterStatus, searchTerm }) => {
+  const [events, setEvents] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [editingEvent, setEditingEvent] = useState(null);
   const { user } = useAuth();
 
-  // Fetch events from the backend when the component mounts
   useEffect(() => {
     const fetchEvents = async () => {
       try {
@@ -19,7 +18,7 @@ const EventTable = () => {
             Authorization: `Bearer ${user?.token}`,
           },
         });
-        setEvents(response.data); // Update state with fetched events
+        setEvents(response.data);
       } catch (error) {
         console.error("Error fetching events:", error);
       }
@@ -35,16 +34,20 @@ const EventTable = () => {
     setShowModal(true);
   };
 
-  // const handleModalSubmit = (newEventData) => {
-  //   // Update state when a new event is added or updated
-  //   if (editingEvent) {
-  //     setEvents(
-  //       events.map((ev) => (ev._id === newEventData._id ? newEventData : ev))
-  //     );
-  //   } else {
-  //     setEvents([...events, newEventData]);
-  //   }
-  // };
+  // ✅ Combine both Paid/Free filter and search term
+  const filteredEvents = events.filter((ev) => {
+    const matchesStatus = filterStatus
+      ? filterStatus === "Paid"
+        ? ev.isPaid
+        : !ev.isPaid
+      : true;
+
+    const matchesSearch = ev.eventName
+      .toLowerCase()
+      .includes(searchTerm?.toLowerCase() || "");
+
+    return matchesStatus && matchesSearch;
+  });
 
   return (
     <div className="p-3 bg-white rounded shadow-sm">
@@ -52,8 +55,8 @@ const EventTable = () => {
         <div className="col-md-8">
           <h5>Your Events</h5>
           <p>
-            <i className="bi bi-check2-circle text-primary"></i> {events.length}{" "}
-            Events in total
+            <i className="bi bi-check2-circle text-primary"></i>{" "}
+            {filteredEvents.length} Events in total
           </p>
         </div>
         <div className="col-md-4 text-end">
@@ -74,25 +77,15 @@ const EventTable = () => {
             <th>From Date</th>
             <th>To Date</th>
             <th>Event Status</th>
+            <th>Paid</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
-          {events.map((event, index) => (
+          {filteredEvents.map((event, index) => (
             <tr key={index}>
               <td>{event.eventName}</td>
-              <td>
-                {event.attendees && event.attendees.length > 0
-                  ? event.attendees.map((a, idx) => (
-                      <span
-                        key={idx}
-                        className="px-2 border rounded-circle me-1"
-                      >
-                        {a}
-                      </span>
-                    ))
-                  : "-"}
-              </td>
+              <td>{event.attendees || 0}</td>
               <td>
                 {event.fromDate
                   ? new Date(event.fromDate).toLocaleDateString()
@@ -104,6 +97,7 @@ const EventTable = () => {
                   : "-"}
               </td>
               <td>{event.eventStatus || "Draft"}</td>
+              <td>{event.isPaid ? "Paid" : "Free"}</td>
               <td>
                 <ActionButtons
                   event={event}
@@ -113,7 +107,6 @@ const EventTable = () => {
                   }}
                   events={events}
                   setEvents={setEvents}
-                  // Delete functionality can be wired here too
                 />
               </td>
             </tr>
