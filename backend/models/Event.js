@@ -6,9 +6,16 @@ const EventSchema = new mongoose.Schema({
   fromDate: { type: Date, required: true },
   toDate: { type: Date, required: true },
   location: { type: String, required: true },
-  eventStatus: { type: String, enum: ["Published", "Draft"], default: "Draft" }, // 👈 Added this line
+  eventStatus: { type: String, enum: ["Draft", "Published"], default: "Draft" },
   featuredImage: { type: String },
-  createdAt: { type: Date, default: Date.now },
+  isPaid: { type: Boolean, default: false },
+  price: {
+    type: Number,
+    required: function () {
+      return this.isPaid === true;
+    },
+    min: 1,
+  },
 });
 
 module.exports = mongoose.model("Event", EventSchema);

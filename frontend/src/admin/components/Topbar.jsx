@@ -26,17 +26,7 @@ const Topbar = ({ onToggleSidebar }) => {
         >
           <i className="text-white bi bi-arrow-left"></i>
         </button>
-
-        <div className="input-group" style={{ width: "250px" }}>
-          <span className="bg-white input-group-text border-end-0">
-            <i className="bi bi-search text-muted"></i>
-          </span>
-          <input
-            type="text"
-            className="form-control border-start-0"
-            placeholder="Search..."
-          />
-        </div>
+        {/* Removed Search Input */}
       </div>
 
       <div className="d-flex align-items-center position-relative">
@@ -48,7 +38,7 @@ const Topbar = ({ onToggleSidebar }) => {
         >
           {user?.name || "Guest"}
           <br />
-          <small>{user?.role === 'admin' ? 'Events Manager' : 'User'}</small>
+          <small>{user?.role === "admin" ? "Events Manager" : "User"}</small>
         </div>
 
         {showLogout && (

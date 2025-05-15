@@ -33,9 +33,7 @@ class EventController {
       res.json(event);
       logger.log(`Fetched event by ID: ${req.params.id}`);
     } catch (error) {
-      logger.error(
-        `Failed to fetch event with ID ${req.params.id}: ${error.message}`
-      );
+      logger.error(`Failed to fetch event with ID ${req.params.id}: ${error.message}`);
       next(error);
     }
   }
@@ -49,13 +47,9 @@ class EventController {
         req.file
       );
       res.json(updatedEvent);
-      logger.log(
-        `Event updated: ${updatedEvent.eventName} (ID: ${req.params.id})`
-      );
+      logger.log(`Event updated: ${updatedEvent.eventName} (ID: ${req.params.id})`);
     } catch (error) {
-      logger.error(
-        `Failed to update event with ID ${req.params.id}: ${error.message}`
-      );
+      logger.error(`Failed to update event with ID ${req.params.id}: ${error.message}`);
       next(error);
     }
   }
@@ -67,9 +61,35 @@ class EventController {
       res.json(result);
       logger.log(`Event deleted (ID: ${req.params.id})`);
     } catch (error) {
-      logger.error(
-        `Failed to delete event with ID ${req.params.id}: ${error.message}`
-      );
+      logger.error(`Failed to delete event with ID ${req.params.id}: ${error.message}`);
+      next(error);
+    }
+  }
+
+  // Register for an event
+  async registerForEvent(req, res, next) {
+    try {
+      const { eventId, firstName, lastName, phone, email, numberOfTickets } = req.body;
+
+      const event = await eventService.getEventById(eventId);
+      if (!event) {
+        logger.warn(`Attempted to register for non-existent event: ${eventId}`);
+        return res.status(404).json({ message: "Event not found" });
+      }
+
+      const registration = await eventService.registerUserToEvent({
+        eventId,
+        firstName,
+        lastName,
+        phone,
+        email,
+        numberOfTickets,
+      });
+
+      logger.log(`User registered for event ${eventId}: ${firstName} ${lastName}`);
+      res.status(201).json({ message: "Registration successful", registration });
+    } catch (error) {
+      logger.error(`Registration failed: ${error.message}`);
       next(error);
     }
   }

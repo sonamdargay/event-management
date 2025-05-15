@@ -1,13 +1,13 @@
-import { useState, useEffect } from "react";
-import { useAuth } from "../../context/AuthContext";
+import React, { useState, useEffect } from "react";
 import axiosInstance from "../../axiosConfig";
+import { useAuth } from "../../context/AuthContext";
 
 const EventModal = ({
   show,
   onClose,
+  editingEvent,
   events,
   setEvents,
-  editingEvent,
   setEditingEvent,
 }) => {
   const { user } = useAuth();
@@ -18,8 +18,10 @@ const EventModal = ({
     fromDate: "",
     toDate: "",
     location: "",
-    eventStatus: "Draft", // 👈 Default status
+    eventStatus: "Draft",
     featuredImage: null,
+    isPaid: false,
+    price: "",
   });
 
   useEffect(() => {
@@ -27,13 +29,13 @@ const EventModal = ({
       setFormData({
         eventName: editingEvent.eventName || "",
         description: editingEvent.description || "",
-        fromDate: editingEvent.fromDate
-          ? editingEvent.fromDate.substring(0, 10)
-          : "",
-        toDate: editingEvent.toDate ? editingEvent.toDate.substring(0, 10) : "",
+        fromDate: editingEvent.fromDate?.substring(0, 10) || "",
+        toDate: editingEvent.toDate?.substring(0, 10) || "",
         location: editingEvent.location || "",
-        eventStatus: editingEvent.eventStatus || "Draft", // 👈 Pre-fill status
+        eventStatus: editingEvent.eventStatus || "Draft",
         featuredImage: null,
+        isPaid: editingEvent.isPaid || false,
+        price: editingEvent.price || "",
       });
     } else {
       setFormData({
@@ -44,6 +46,8 @@ const EventModal = ({
         location: "",
         eventStatus: "Draft",
         featuredImage: null,
+        isPaid: false,
+        price: "",
       });
     }
   }, [editingEvent]);
@@ -52,15 +56,17 @@ const EventModal = ({
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Authorization header:", `Bearer ${user?.token}`);
-
     const data = new FormData();
     data.append("eventName", formData.eventName);
     data.append("description", formData.description);
     data.append("fromDate", formData.fromDate);
     data.append("toDate", formData.toDate);
     data.append("location", formData.location);
-    data.append("eventStatus", formData.eventStatus); // 👈 Include event status
+    data.append("eventStatus", formData.eventStatus);
+    data.append("isPaid", formData.isPaid);
+    if (formData.isPaid) {
+      data.append("price", formData.price);
+    }
     if (formData.featuredImage) {
       data.append("featuredImage", formData.featuredImage);
     }
@@ -79,8 +85,8 @@ const EventModal = ({
           }
         );
         setEvents(
-          events.map((event) =>
-            event._id === response.data._id ? response.data : event
+          events.map((ev) =>
+            ev._id === response.data._id ? response.data : ev
           )
         );
       } else {
@@ -91,13 +97,13 @@ const EventModal = ({
           },
         });
         setEvents([...events, response.data]);
-        console.log("New event added:", response.data);
       }
+
       setEditingEvent(null);
       onClose();
     } catch (error) {
+      console.error("❌ Failed to submit event:", error);
       alert("Failed to save event.");
-      console.error(error);
     }
   };
 
@@ -109,17 +115,21 @@ const EventModal = ({
     >
       <div className="modal-dialog">
         <div className="modal-content">
-          <div className="modal-header">
-            <h5 className="modal-title">
-              {editingEvent ? "Update Event" : "Create New Event"}
-            </h5>
-            <button
-              type="button"
-              className="btn-close"
-              onClick={onClose}
-            ></button>
-          </div>
           <form onSubmit={handleSubmit} encType="multipart/form-data">
+            <div className="modal-header">
+              <h5 className="modal-title">
+                {editingEvent ? "Update Event" : "Create New Event"}
+              </h5>
+              <button
+                type="button"
+                className="btn-close"
+                onClick={() => {
+                  onClose();
+                  setEditingEvent(null);
+                }}
+              ></button>
+            </div>
+
             <div className="modal-body">
               <div className="mb-3">
                 <label className="form-label">Event Name</label>
@@ -133,11 +143,11 @@ const EventModal = ({
                   required
                 />
               </div>
+
               <div className="mb-3">
                 <label className="form-label">Description</label>
                 <textarea
                   className="form-control"
-                  rows="3"
                   value={formData.description}
                   onChange={(e) =>
                     setFormData({ ...formData, description: e.target.value })
@@ -145,6 +155,7 @@ const EventModal = ({
                   required
                 />
               </div>
+
               <div className="mb-3 d-flex gap-2">
                 <div className="flex-fill">
                   <label className="form-label">From Date</label>
@@ -171,6 +182,7 @@ const EventModal = ({
                   />
                 </div>
               </div>
+
               <div className="mb-3">
                 <label className="form-label">Location</label>
                 <input
@@ -183,6 +195,7 @@ const EventModal = ({
                   required
                 />
               </div>
+
               <div className="mb-3">
                 <label className="form-label">Status</label>
                 <select
@@ -197,6 +210,41 @@ const EventModal = ({
                   <option value="Draft">Draft</option>
                 </select>
               </div>
+
+              {/* Paid Event Toggle */}
+              <div className="form-check form-switch mb-3">
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  id="paidSwitch"
+                  checked={formData.isPaid}
+                  onChange={() =>
+                    setFormData((prev) => ({ ...prev, isPaid: !prev.isPaid }))
+                  }
+                />
+                <label className="form-check-label" htmlFor="paidSwitch">
+                  {formData.isPaid ? "Paid Event" : "Free Event"}
+                </label>
+              </div>
+
+              {/* Price input (only show if isPaid) */}
+              {formData.isPaid && (
+                <div className="mb-3">
+                  <label className="form-label">Ticket Price (AUD)</label>
+                  <input
+                    type="number"
+                    className="form-control"
+                    value={formData.price}
+                    onChange={(e) =>
+                      setFormData({ ...formData, price: e.target.value })
+                    }
+                    placeholder="Enter ticket price"
+                    min="1"
+                    required
+                  />
+                </div>
+              )}
+
               <div className="mb-3">
                 <label className="form-label">Featured Image</label>
                 <input
@@ -211,6 +259,7 @@ const EventModal = ({
                 />
               </div>
             </div>
+
             <div className="modal-footer">
               <button
                 type="button"
@@ -223,7 +272,7 @@ const EventModal = ({
                 Cancel
               </button>
               <button type="submit" className="btn btn-primary">
-                {editingEvent ? "Update Event" : "Create Event"}
+                {editingEvent ? "Update" : "Create"}
               </button>
             </div>
           </form>
