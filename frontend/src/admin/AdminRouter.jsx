@@ -11,7 +11,7 @@ const AdminRouter = () => (
     <Route path="/events" element={<EventDetails />} />
     <Route path="/events/:eventId" element={<EventDetails />} />
     <Route path="/attendees" element={<Attendees />} />
-    <Route path="/notifications" element={<Notifications />} />
+    <Route path="/logs" element={<Notifications />} />
     {/* Add more admin routes here */}
   </Routes>
 );

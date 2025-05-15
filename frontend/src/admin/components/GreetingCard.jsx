@@ -1,5 +1,5 @@
 const GreetingCard = ({
-  title = "Hello Sonam !",
+  title = "Dashboard !",
   subtitle = "This is an event management system built with React and Node.js.",
 }) => (
   <div

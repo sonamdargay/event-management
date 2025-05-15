@@ -52,10 +52,10 @@ const Sidebar = () => {
         </li>
         <li>
           <Link
-            to="/admin/notifications"
-            className={`nav-link ${isActive("/admin/notifications")}`}
+            to="/admin/logs"
+            className={`nav-link ${isActive("/admin/logs")}`}
           >
-            <i className="bi bi-journal-text me-2"></i> Notifications
+            <i className="bi bi-journal-text me-2"></i> System Logs
           </Link>
         </li>
       </ul>

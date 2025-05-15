@@ -6,6 +6,7 @@ import Footer from "../components/Footer";
 import axiosInstance from "../../axiosConfig";
 
 const Attendees = () => {
+  const [sidebarVisible, setSidebarVisible] = useState(true);
   const [attendees, setAttendees] = useState([]);
   const [selectedAttendee, setSelectedAttendee] = useState(null);
   const [showModal, setShowModal] = useState(false);
@@ -30,24 +31,25 @@ const Attendees = () => {
   };
 
   const filteredAttendees = attendees.filter((attendee) =>
-    attendee.eventId?.eventName
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase())
+    attendee.eventId?.eventName.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
     <div className="d-flex">
-      <Sidebar />
+      {sidebarVisible && <Sidebar />}
       <div className="flex-grow-1">
-        <Topbar />
+        <Topbar onToggleSidebar={() => setSidebarVisible(!sidebarVisible)} />
         <div className="p-4 bg-light" style={{ minHeight: "100vh" }}>
           <GreetingCard
             title="Attendee List"
             subtitle="We are on a mission to help developers like you to build beautiful projects for FREE."
           />
 
-          {/* ✅ Compact search bar aligned to the left */}
-          <div className="d-flex justify-content-start mb-3" style={{ maxWidth: "300px" }}>
+          {/* Compact search bar aligned to the left */}
+          <div
+            className="d-flex justify-content-start mb-3"
+            style={{ maxWidth: "300px" }}
+          >
             <input
               type="text"
               className="form-control"
@@ -73,7 +75,9 @@ const Attendees = () => {
               <tbody>
                 {filteredAttendees.map((attendee, index) => (
                   <tr key={index}>
-                    <td>{attendee.firstName} {attendee.lastName}</td>
+                    <td>
+                      {attendee.firstName} {attendee.lastName}
+                    </td>
                     <td>{attendee.email}</td>
                     <td>{attendee.eventId?.eventName || "Unknown Event"}</td>
                     <td>{new Date(attendee.registeredAt).toLocaleString()}</td>
@@ -122,12 +126,28 @@ const Attendees = () => {
             style={{ maxWidth: "500px", width: "100%" }}
           >
             <h5 className="mb-3">Attendee Details</h5>
-            <p><strong>Name:</strong> {selectedAttendee.firstName} {selectedAttendee.lastName}</p>
-            <p><strong>Email:</strong> {selectedAttendee.email}</p>
-            <p><strong>Phone:</strong> {selectedAttendee.phone || "-"}</p>
-            <p><strong>Number of Tickets:</strong> {selectedAttendee.numberOfTickets}</p>
-            <p><strong>Event Name:</strong> {selectedAttendee.eventId?.eventName || "Unknown"}</p>
-            <p><strong>Registration Date:</strong> {new Date(selectedAttendee.registeredAt).toLocaleString()}</p>
+            <p>
+              <strong>Name:</strong> {selectedAttendee.firstName}{" "}
+              {selectedAttendee.lastName}
+            </p>
+            <p>
+              <strong>Email:</strong> {selectedAttendee.email}
+            </p>
+            <p>
+              <strong>Phone:</strong> {selectedAttendee.phone || "-"}
+            </p>
+            <p>
+              <strong>Number of Tickets:</strong>{" "}
+              {selectedAttendee.numberOfTickets}
+            </p>
+            <p>
+              <strong>Event Name:</strong>{" "}
+              {selectedAttendee.eventId?.eventName || "Unknown"}
+            </p>
+            <p>
+              <strong>Registration Date:</strong>{" "}
+              {new Date(selectedAttendee.registeredAt).toLocaleString()}
+            </p>
 
             <div className="text-end mt-3">
               <button
