@@ -31,7 +31,7 @@ const Attendees = () => {
   };
 
   const filteredAttendees = attendees.filter((attendee) =>
-    attendee.eventId?.eventName.toLowerCase().includes(searchTerm.toLowerCase())
+    attendee.firstName.toLowerCase().includes(searchTerm.toLowerCase()) || attendee.lastName.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
