@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Topbar from "../admin/components/Topbar";
 import axiosInstance from "../axiosConfig";
+import Footer from "../admin/components/Footer";
 
 // Fixed collection of images for events
 const eventImages = [
@@ -130,6 +131,7 @@ export default function UserPage() {
           })}
         </div>
       </div>
+      <Footer/>
     </>
   );
 }
